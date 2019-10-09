@@ -202,11 +202,41 @@
         </div>
 
         <div class="col-md-6 mb-5">
-          <div class="card bg-warning text-light" title="A Project">
+          <div class="card bg-warning text-light mb-3" title="A Project">
             <div class="card-body">
               <h5 class="card-title">You're Next (KW)</h5>
               <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
               <p class="text-dark">26 days • 3 of 8 tasks completed.</p>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
+            <button class="btn btn-danger" title="Delete">Delete</button>
+
+            <div class="modal fade" id="formEditProject" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Project</h5>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label class="col-form-label">Project Name</label>
+                        <input type="text" class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label class="col-form-label">Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-success">Save</button>
+                    <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
