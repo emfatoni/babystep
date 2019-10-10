@@ -48,14 +48,26 @@
 
     
     
-    <nav class="navbar navbar-dark bg-primary">
+    <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
         <div class="container">
           <span class="navbar-brand" title="Home">Baby Step Project</span></span>
-          <ul class="nav">
-            <li class="nav-item" title="Save"><button class="btn btn-primary"><i class="material-icons">save</i></button></li>
-            <li class="nav-item" title="Achievements"><button class="btn btn-primary"><i class="material-icons">emoji_events</i></button></li>
-            <li class="nav-item" title="Add Project"><button class="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i class="material-icons">note_add</i></button></li>
-          </ul>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse justify-content-end mt-2" id="navbarItem">
+            <ul class="nav justify-content-end">
+              <li class="nav-item" title="Save"><button class="btn btn-primary"><i class="material-icons">save</i></button></li>
+              <li class="nav-item" title="Achievements"><button class="btn btn-primary"><i class="material-icons">emoji_events</i></button></li>
+              <li class="nav-item" title="Add Project"><button class="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i class="material-icons">note_add</i></button></li>
+              <li class="nav-item">
+                <form class="form-inline ml-2">
+                  <input type="text" name="" class="form-control" placeholder="Search here...">
+                </form>
+              </li>
+            </ul>
+          </div>
         </div>
     </nav>
 
