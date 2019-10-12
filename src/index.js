@@ -72,3 +72,82 @@ class BSPTaskForm extends React.Component{
 		);
 	}
 }
+
+class BSPEditProject extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div>
+				<button className="btn btn-primary" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
+	            <button className="btn btn-danger" title="Delete">Delete</button>
+	            <button className="btn btn-success" title="Complete Project">It's Complete!</button>
+
+				<div className="modal fade" id="formEditProject" tabIndex="-1" role="dialog">
+					<div className="modal-dialog" role="document">
+						<div className="modal-content">
+							<div className="modal-header">
+								<h5 className="modal-title">Edit Project</h5>
+							</div>
+							<div className="modal-body">
+								<form>
+									<div className="form-group">
+										<label className="col-form-label">Project Name</label>
+										<input type="text" className="form-control" />
+									</div>
+									<div className="form-group">
+										<label className="col-form-label">Description</label>
+										<textarea className="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+									</div>
+								</form>
+							</div>
+							<div className="modal-footer">
+								<button className="btn btn-success">Save</button>
+								<button className="btn btn-danger" data-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+
+class BSPAddProject extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="modal fade" id="formAddProject" tabIndex="-1" role="dialog">
+				<div className="modal-dialog" role="document">
+					<div className="modal-content">
+						<div className="modal-header">
+							<h5 className="modal-title">Add New Project</h5>
+						</div>
+						<div className="modal-body">
+							<form>
+								<div className="form-group">
+									<label className="col-form-label">Project Name</label>
+									<input type="text" className="form-control" />
+								</div>
+								<div className="form-group">
+									<label className="col-form-label">Description</label>
+									<textarea className="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+								</div>
+							</form>
+						</div>
+						<div className="modal-footer">
+							<button className="btn btn-success">Save</button>
+							<button className="btn btn-danger" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
