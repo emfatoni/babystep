@@ -31,3 +31,44 @@ class BSPProjectCard extends React.Component{
 		);
 	}
 }
+
+class BSPProjectTask extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="card mb-3">
+				<div className="card-body clearfix">
+					<p className="card-text float-left pt-2">A Small Task</p>
+					<div className="float-right">
+						<button className="btn" title="Done"><i className="material-icons">done</i></button>
+						<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
+					</div>
+				</div>
+			</div>
+		);
+	}
+}
+
+class BSPTaskForm extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<form className="bg-light px-3 pt-3">
+				<div className="form-row">
+					<div class="col-md-9 mb-3">
+						<input type="text" className="form-control" placeholder="Small task..." />
+					</div>
+					<div className="col-md-3 mb-3">
+						<button className="btn btn-primary col">Add</button>
+					</div>
+				</div>
+			</form>
+		);
+	}
+}
