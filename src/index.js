@@ -202,3 +202,58 @@ class BSPHome extends React.Component{
 	}
 }
 
+
+class BSPAchievement extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="row py-5">
+				<div className="col-md-12">
+					<h1 className="mb-5">Congratulations! This is what you've tackle so far.</h1>
+				</div>
+
+				<div className="col-md-4">
+					<BSPProjectCard />
+				</div>
+				<div className="col-md-4">
+					<BSPProjectCard />
+				</div>
+			</div>
+		);
+	}
+}
+
+
+class BSPDetailProject extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="row py-5">
+				<div className="col-md-12 mb-5">
+					<h3>Do it one small step at a time so you can done it easily.</h3>
+					<a href="#" className="text-muted">Back to home</a>
+				</div>
+
+				<div className="col-md-6 mb-5">
+					<BSPProjectCard />
+					<BSPEditProject />
+				</div>
+
+				<div className="col-md-6">
+					<h5 className="mb-3">List of small tasks</h5>
+					<BSPProjectTask />
+					<BSPProjectTask />
+					<BSPProjectTask />
+					<BSPTaskForm />
+				</div>
+			</div>
+		);
+	}
+}
+
