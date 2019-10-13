@@ -151,3 +151,54 @@ class BSPAddProject extends React.Component{
 		);
 	}
 }
+
+
+class BSPUndoneProject extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="col-md-4 mb-5">
+				<h2 className="mb-5">Let's do it today!</h2>
+				<BSPProjectCard />
+				<BSPProjectCard />
+			</div>
+		);
+	}
+}
+
+
+class BSPDoneProject extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="col-md-4 mb-5">
+				<h2 className="mb-5">Done today.</h2>
+				<BSPProjectCard />
+				<BSPProjectCard />
+			</div>
+		);
+	}
+}
+
+
+class BSPHome extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="row justify-content-center">
+				<BSPUndoneProject />
+				<BSPDoneProject />
+			</div>
+		);
+	}
+}
+
