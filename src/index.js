@@ -257,3 +257,73 @@ class BSPDetailProject extends React.Component{
 	}
 }
 
+class BSPNavbar extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div>
+				<nav className="navbar navbar-dark bg-primary navbar-expand-lg">
+					<div className="container">
+						<span className="navbar-brand" title="Home">Baby Step Project</span></span>
+
+						<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
+							<span className="navbar-toggler-icon"></span>
+						</button>
+
+						<div className="collapse navbar-collapse justify-content-end mt-2" id="navbarItem">
+							<ul className="nav justify-content-end">
+								<li className="nav-item" title="Save"><button className="btn btn-primary"><i className="material-icons">save</i></button></li>
+								<li className="nav-item" title="Achievements"><button className="btn btn-primary"><i className="material-icons">emoji_events</i></button></li>
+								<li className="nav-item" title="Add Project"><button className="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i className="material-icons">note_add</i></button></li>
+								<li className="nav-item">
+									<form className="form-inline ml-2">
+										<input type="text" name="" className="form-control" placeholder="Search here..." />
+									</form>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+
+				<BSPAddProject />
+			</div>
+		);
+	}
+}
+
+
+class BSPMiniDashboard extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div className="jumbotron bg-light">
+				<div className="container">
+					<h1 className="display-4">You've completed 60 projects,<br />now do the remaining 3, one step at a time <i className="material-icons md-48" style={font-size: '45px !important'}>emoji_food_beverage</i></h1>
+				</div>
+			</div>
+		);
+	}
+}
+
+
+class BSPFooter extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<footer className="bg-light py-5">
+				<div className="container text-center">
+					<p className="m-0">© 2019 M Fatoni</p>
+				</div>
+			</footer>
+		);
+	}
+}
