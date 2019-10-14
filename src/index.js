@@ -24,7 +24,7 @@ class BSPProjectCard extends React.Component{
 			<div className="card bg-warning mb-3" title="A Project">
 				<div className="card-body text-light">
 					<h5 className="card-title">A Project</h5>
-					<p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+					<p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 					<BSPProjectSum />
 				</div>
 			</div>
@@ -61,7 +61,7 @@ class BSPTaskForm extends React.Component{
 		return(
 			<form className="bg-light px-3 pt-3">
 				<div className="form-row">
-					<div class="col-md-9 mb-3">
+					<div className="col-md-9 mb-3">
 						<input type="text" className="form-control" placeholder="Small task..." />
 					</div>
 					<div className="col-md-3 mb-3">
@@ -81,8 +81,8 @@ class BSPEditProject extends React.Component{
 	render(){
 		return(
 			<div>
-				<button className="btn btn-primary" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
-	            <button className="btn btn-danger" title="Delete">Delete</button>
+				<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
+	            <button className="btn btn-danger mr-2" title="Delete">Delete</button>
 	            <button className="btn btn-success" title="Complete Project">It's Complete!</button>
 
 				<div className="modal fade" id="formEditProject" tabIndex="-1" role="dialog">
@@ -237,7 +237,7 @@ class BSPDetailProject extends React.Component{
 			<div className="row py-5">
 				<div className="col-md-12 mb-5">
 					<h3>Do it one small step at a time so you can done it easily.</h3>
-					<a href="#" className="text-muted">Back to home</a>
+					<a className="text-muted">Back to home</a>
 				</div>
 
 				<div className="col-md-6 mb-5">
@@ -267,7 +267,7 @@ class BSPNavbar extends React.Component{
 			<div>
 				<nav className="navbar navbar-dark bg-primary navbar-expand-lg">
 					<div className="container">
-						<span className="navbar-brand" title="Home">Baby Step Project</span></span>
+						<span className="navbar-brand" title="Home">Baby Step Project</span>
 
 						<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
 							<span className="navbar-toggler-icon"></span>
@@ -304,7 +304,7 @@ class BSPMiniDashboard extends React.Component{
 		return(
 			<div className="jumbotron bg-light">
 				<div className="container">
-					<h1 className="display-4">You've completed 60 projects,<br />now do the remaining 3, one step at a time <i className="material-icons md-48" style={font-size: '45px !important'}>emoji_food_beverage</i></h1>
+					<h1 className="display-4">You've completed 60 projects,<br />now do the remaining 3, one step at a time</h1>
 				</div>
 			</div>
 		);
@@ -327,3 +327,29 @@ class BSPFooter extends React.Component{
 		);
 	}
 }
+
+
+class BSPApps extends React.Component{
+	constructor(props){
+		super(props);
+	}
+
+	render(){
+		return(
+			<div>
+				<BSPNavbar />
+				<BSPMiniDashboard />
+				<div className="container">
+					<BSPHome />
+				</div>
+				<BSPFooter />
+			</div>
+		);
+	}
+}
+
+
+ReactDOM.render(
+  <BSPApps />,
+  document.getElementById('root')
+);
