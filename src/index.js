@@ -8,8 +8,19 @@ class BSPProjectSum extends React.Component {
 	}
 
 	render(){
+		const completeTasks = [];
+		const incompleteTasks = [];
+
+		this.props.project.tasks.forEach((task) => {
+			if(task.status === 'Done'){
+				completeTasks.push(task);
+			}else{
+				incompleteTasks.push(task);
+			}
+		});
+
 		return(
-			<p className="text-dark">26 days • 3 of 8 tasks completed.</p>
+			<p className="text-dark">{this.props.project.created} • {completeTasks.length} of {this.props.project.tasks.length} tasks completed.</p>
 		);
 	}
 }
@@ -23,9 +34,9 @@ class BSPProjectCard extends React.Component{
 		return(
 			<div className="card bg-warning mb-3" title="A Project">
 				<div className="card-body text-light">
-					<h5 className="card-title">A Project</h5>
-					<p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-					<BSPProjectSum />
+					<h5 className="card-title">{this.props.project.name}</h5>
+					<p className="card-text">{this.props.project.description}</p>
+					<BSPProjectSum project={this.props.project} />
 				</div>
 			</div>
 		);
@@ -38,17 +49,31 @@ class BSPProjectTask extends React.Component{
 	}
 
 	render(){
-		return(
-			<div className="card mb-3">
-				<div className="card-body clearfix">
-					<p className="card-text float-left pt-2">A Small Task</p>
-					<div className="float-right">
-						<button className="btn" title="Done"><i className="material-icons">done</i></button>
-						<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
+		if(this.props.task.status === 'Done'){
+			return(
+				<div className="card mb-3">
+					<div className="card-body clearfix">
+						<p className="card-text float-left pt-2"><del>{this.props.task.name}</del></p>
+						<div className="float-right">
+							<button className="btn" title="Undone"><i className="material-icons">undo</i></button>
+							<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
+						</div>
 					</div>
 				</div>
-			</div>
-		);
+			);
+		}else{
+			return(
+				<div className="card mb-3">
+					<div className="card-body clearfix">
+						<p className="card-text float-left pt-2">{this.props.task.name}</p>
+						<div className="float-right">
+							<button className="btn" title="Done"><i className="material-icons">done</i></button>
+							<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
+						</div>
+					</div>
+				</div>
+			);
+		}
 	}
 }
 
@@ -159,11 +184,16 @@ class BSPUndoneProject extends React.Component{
 	}
 
 	render(){
+		const cards = [];
+
+		this.props.projects.forEach((project) => {
+			cards.push(<BSPProjectCard project={project} />);
+		});
+
 		return(
 			<div className="col-md-4 mb-5">
 				<h2 className="mb-5">Let's do it today!</h2>
-				<BSPProjectCard />
-				<BSPProjectCard />
+				{cards}
 			</div>
 		);
 	}
@@ -176,11 +206,16 @@ class BSPDoneProject extends React.Component{
 	}
 
 	render(){
+		const cards = [];
+
+		this.props.projects.forEach((project) => {
+			cards.push(<BSPProjectCard project={project} />);
+		});
+
 		return(
 			<div className="col-md-4 mb-5">
 				<h2 className="mb-5">Done today.</h2>
-				<BSPProjectCard />
-				<BSPProjectCard />
+				{cards}
 			</div>
 		);
 	}
@@ -193,10 +228,23 @@ class BSPHome extends React.Component{
 	}
 
 	render(){
+		const doneProjects = [];
+		const undoneProjects = [];
+
+		this.props.projects.forEach((project) => {
+			if(project.status === 'In Progress'){
+				if(project.isDoneToday){
+					doneProjects.push(project);
+				}else{
+					undoneProjects.push(project);
+				}
+			}
+		});
+
 		return(
 			<div className="row justify-content-center">
-				<BSPUndoneProject />
-				<BSPDoneProject />
+				<BSPUndoneProject projects={undoneProjects} />
+				<BSPDoneProject projects={doneProjects} />
 			</div>
 		);
 	}
@@ -209,18 +257,25 @@ class BSPAchievement extends React.Component{
 	}
 
 	render(){
+		const completeProjects = [];
+
+		this.props.projects.forEach((project) => {
+			if(project.status === 'Done'){
+				completeProjects.push(
+					<div className="col-md-4">
+						<BSPProjectCard project={project} />
+					</div>
+				);
+			}
+		});
+
 		return(
 			<div className="row py-5">
 				<div className="col-md-12">
 					<h1 className="mb-5">Congratulations! This is what you've tackle so far.</h1>
 				</div>
 
-				<div className="col-md-4">
-					<BSPProjectCard />
-				</div>
-				<div className="col-md-4">
-					<BSPProjectCard />
-				</div>
+				{completeProjects}
 			</div>
 		);
 	}
@@ -233,6 +288,12 @@ class BSPDetailProject extends React.Component{
 	}
 
 	render(){
+		const tasks = [];
+
+		this.props.project.tasks.forEach((task) => {
+			tasks.push(<BSPProjectTask task={task} />);
+		});
+
 		return(
 			<div className="row py-5">
 				<div className="col-md-12 mb-5">
@@ -241,15 +302,13 @@ class BSPDetailProject extends React.Component{
 				</div>
 
 				<div className="col-md-6 mb-5">
-					<BSPProjectCard />
+					<BSPProjectCard project={this.props.project} />
 					<BSPEditProject />
 				</div>
 
 				<div className="col-md-6">
 					<h5 className="mb-3">List of small tasks</h5>
-					<BSPProjectTask />
-					<BSPProjectTask />
-					<BSPProjectTask />
+					{tasks}
 					<BSPTaskForm />
 				</div>
 			</div>
@@ -301,10 +360,22 @@ class BSPMiniDashboard extends React.Component{
 	}
 
 	render(){
+		const completeProjects = [];
+		const incompleteProjects = [];
+
+		this.props.projects.forEach((project) => {
+			if(project.status === 'Done'){
+				completeProjects.push(project);
+			}else{
+				incompleteProjects.push(project);
+			}
+		});
+
+
 		return(
 			<div className="jumbotron bg-light">
 				<div className="container">
-					<h1 className="display-4">You've completed 60 projects,<br />now do the remaining 3, one step at a time</h1>
+					<h1 className="display-4">You've completed {completeProjects.length} projects,<br />now do the remaining {incompleteProjects.length}, one step at a time</h1>
 				</div>
 			</div>
 		);
@@ -332,24 +403,92 @@ class BSPFooter extends React.Component{
 class BSPApps extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.state = {
+			page: 'home'
+		};
 	}
 
 	render(){
-		return(
-			<div>
-				<BSPNavbar />
-				<BSPMiniDashboard />
-				<div className="container">
-					<BSPHome />
+		let projects = [];
+		const tasks = this.props.tasks;
+
+		this.props.projects.forEach((project) => {
+			let newProject = project;
+			newProject.tasks = [];
+
+			tasks.forEach((task) => {
+				if(task.project_id === newProject.id){
+					newProject.tasks.push(task);
+				}
+			});
+
+			projects.push(newProject);
+		});
+
+
+		if(this.state.page === 'home'){
+			return(
+				<div>
+					<BSPNavbar />
+					<BSPMiniDashboard projects={projects} />
+
+					<div className="container">
+						<BSPHome projects={projects} />
+					</div>
+					<BSPFooter />
 				</div>
-				<BSPFooter />
-			</div>
-		);
+			);
+		}else if(this.state.page === 'achievements'){
+			return(
+				<div>
+					<BSPNavbar />
+					<div className="container">
+						<BSPAchievement projects={projects} />
+					</div>
+					<BSPFooter />
+				</div>
+			);
+		}else if(this.state.page === 'detailed'){
+			const project = projects.find(p => p.id === '3');
+			
+			return(
+				<div>
+					<BSPNavbar />
+					<div className="container">
+						<BSPDetailProject project={project} />
+					</div>
+					<BSPFooter />
+				</div>
+			);
+		}else{
+			return null;
+		}
+		
 	}
 }
 
 
+let projects = [
+	{id: '1', name: 'Baby Step Project', created: '01/09/2019', isDoneToday: false, status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
+	{id: '2', name: 'Cerpen SUAMI', created: '10/10/2019', isDoneToday: true, status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
+	{id: '3', name: 'Cerpen ala Lovecraft', created: '10/08/2019', isDoneToday: true, status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '01/09/2019'}
+];
+
+let tasks = [
+	{id: '1', project_id: '1', name: 'Install React-js', status: 'Done', created: '01/10/2019'},
+	{id: '2', project_id: '1', name: 'Sampling data', status: 'Undone', created: '10/10/2019'},
+	{id: '3', project_id: '2', name: 'Scene #1', status: 'Done', created: '11/10/2019'},
+	{id: '4', project_id: '2', name: 'Scene #2', status: 'Undone', created: '12/10/2019'},
+	{id: '5', project_id: '3', name: 'Paragraf #1', status: 'Done', created: '11/08/2019'},
+	{id: '6', project_id: '3', name: 'Paragraf #2', status: 'Done', created: '12/08/2019'}
+];
+
+
 ReactDOM.render(
-  <BSPApps />,
+  <BSPApps 
+  	projects={projects}
+  	tasks={tasks}
+  />,
   document.getElementById('root')
 );
