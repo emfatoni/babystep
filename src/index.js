@@ -19,8 +19,20 @@ class BSPProjectSum extends React.Component {
 			}
 		});
 
+		const today = new Date();
+		const created = new Date(this.props.project.created);
+		const finished = new Date(this.props.project.finished);
+		let dayLong = 0;
+
+		if(this.props.project.status === 'Done'){
+			dayLong = Math.floor((finished.getTime() - created.getTime())/(1000*60*60*24));
+		}else{
+			dayLong = Math.floor((today.getTime() - created.getTime())/(1000*60*60*24));
+		}
+		
+
 		return(
-			<p className="text-dark">{this.props.project.created} • {completeTasks.length} of {this.props.project.tasks.length} tasks completed.</p>
+			<p className="text-dark">{dayLong} days • {completeTasks.length} of {this.props.project.tasks.length} tasks completed.</p>
 		);
 	}
 }
@@ -470,18 +482,18 @@ class BSPApps extends React.Component{
 
 
 let projects = [
-	{id: '1', name: 'Baby Step Project', created: '01/09/2019', isDoneToday: false, status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
-	{id: '2', name: 'Cerpen SUAMI', created: '10/10/2019', isDoneToday: true, status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
-	{id: '3', name: 'Cerpen ala Lovecraft', created: '10/08/2019', isDoneToday: true, status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '01/09/2019'}
+	{id: '1', name: 'Baby Step Project', created: '2019-09-01', isDoneToday: false, status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
+	{id: '2', name: 'Cerpen SUAMI', created: '2019-10-10', isDoneToday: true, status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
+	{id: '3', name: 'Cerpen ala Lovecraft', created: '2019-07-31', isDoneToday: true, status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '2019-09-01'}
 ];
 
 let tasks = [
-	{id: '1', project_id: '1', name: 'Install React-js', status: 'Done', created: '01/10/2019'},
-	{id: '2', project_id: '1', name: 'Sampling data', status: 'Undone', created: '10/10/2019'},
-	{id: '3', project_id: '2', name: 'Scene #1', status: 'Done', created: '11/10/2019'},
-	{id: '4', project_id: '2', name: 'Scene #2', status: 'Undone', created: '12/10/2019'},
-	{id: '5', project_id: '3', name: 'Paragraf #1', status: 'Done', created: '11/08/2019'},
-	{id: '6', project_id: '3', name: 'Paragraf #2', status: 'Done', created: '12/08/2019'}
+	{id: '1', project_id: '1', name: 'Install React-js', status: 'Done', created: '2019-10-01'},
+	{id: '2', project_id: '1', name: 'Sampling data', status: 'Undone', created: '2019-10-10'},
+	{id: '3', project_id: '2', name: 'Scene #1', status: 'Done', created: '2019-10-11'},
+	{id: '4', project_id: '2', name: 'Scene #2', status: 'Undone', created: '2019-10-12'},
+	{id: '5', project_id: '3', name: 'Paragraf #1', status: 'Done', created: '2019-08-11'},
+	{id: '6', project_id: '3', name: 'Paragraf #2', status: 'Done', created: '2019-08-12'}
 ];
 
 
