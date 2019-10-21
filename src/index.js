@@ -193,13 +193,19 @@ class BSPAddProject extends React.Component{
 class BSPUndoneProject extends React.Component{
 	constructor(props){
 		super(props);
+
+		this.makeAlert = this.makeAlert.bind(this);
+	}
+
+	makeAlert(){
+		console.log("Hei!");
 	}
 
 	render(){
 		const cards = [];
 
 		this.props.projects.forEach((project) => {
-			cards.push(<BSPProjectCard project={project} />);
+			cards.push(<BSPProjectCard project={project} onClick={this.makeAlert} />);
 		});
 
 		return(
@@ -245,7 +251,10 @@ class BSPHome extends React.Component{
 
 		this.props.projects.forEach((project) => {
 			if(project.status === 'In Progress'){
-				if(project.isDoneToday){
+				const updated = new Date(project.updated);
+				const today = new Date();
+
+				if(updated.getTime() >= today.getTime()){
 					doneProjects.push(project);
 				}else{
 					undoneProjects.push(project);
@@ -255,8 +264,8 @@ class BSPHome extends React.Component{
 
 		return(
 			<div className="row justify-content-center">
-				<BSPUndoneProject projects={undoneProjects} />
-				<BSPDoneProject projects={doneProjects} />
+				<BSPUndoneProject projects={undoneProjects} gotoDetailed={this.props.gotoDetailed} />
+				<BSPDoneProject projects={doneProjects} gotoDetailed={this.props.gotoDetailed} />
 			</div>
 		);
 	}
@@ -283,8 +292,9 @@ class BSPAchievement extends React.Component{
 
 		return(
 			<div className="row py-5">
-				<div className="col-md-12">
-					<h1 className="mb-5">Congratulations! This is what you've tackle so far.</h1>
+				<div className="col-md-12 mb-5">
+					<h1>Congratulations! This is what you've tackle so far.</h1>
+					<a href="home" className="text-muted" onClick={this.props.gotoHome} >Back to home</a>
 				</div>
 
 				{completeProjects}
@@ -310,7 +320,7 @@ class BSPDetailProject extends React.Component{
 			<div className="row py-5">
 				<div className="col-md-12 mb-5">
 					<h3>Do it one small step at a time so you can done it easily.</h3>
-					<a className="text-muted">Back to home</a>
+					<a href="home" className="text-muted">Back to home</a>
 				</div>
 
 				<div className="col-md-6 mb-5">
@@ -338,7 +348,7 @@ class BSPNavbar extends React.Component{
 			<div>
 				<nav className="navbar navbar-dark bg-primary navbar-expand-lg">
 					<div className="container">
-						<span className="navbar-brand" title="Home">Baby Step Project</span>
+						<a onClick={this.props.gotoHome} href="home" ><span className="navbar-brand" title="Home">Baby Step Project</span></a>
 
 						<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
 							<span className="navbar-toggler-icon"></span>
@@ -347,7 +357,7 @@ class BSPNavbar extends React.Component{
 						<div className="collapse navbar-collapse justify-content-end mt-2" id="navbarItem">
 							<ul className="nav justify-content-end">
 								<li className="nav-item" title="Save"><button className="btn btn-primary"><i className="material-icons">save</i></button></li>
-								<li className="nav-item" title="Achievements"><button className="btn btn-primary"><i className="material-icons">emoji_events</i></button></li>
+								<li className="nav-item" title="Achievements"><button href="achievements" className="btn btn-primary" onClick={this.props.gotoAchievements} ><i className="material-icons">emoji_events</i></button></li>
 								<li className="nav-item" title="Add Project"><button className="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i className="material-icons">note_add</i></button></li>
 								<li className="nav-item">
 									<form className="form-inline ml-2">
@@ -417,8 +427,26 @@ class BSPApps extends React.Component{
 		super(props);
 
 		this.state = {
-			page: 'home'
+			page: 'home',
+			detailedProject: null,
+			searchText: null
 		};
+
+		this.gotoAchievements = this.gotoAchievements.bind(this);
+		this.gotoHome = this.gotoHome.bind(this);
+		this.gotoDetailed = this.gotoDetailed.bind(this);
+	}
+
+	gotoAchievements(){
+		this.setState({page: 'achievements'});
+	}
+
+	gotoHome(){
+		this.setState({page: 'home'});
+	}
+
+	gotoDetailed(){
+		alert('go to detailed');
 	}
 
 	render(){
@@ -442,11 +470,11 @@ class BSPApps extends React.Component{
 		if(this.state.page === 'home'){
 			return(
 				<div>
-					<BSPNavbar />
+					<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
 					<BSPMiniDashboard projects={projects} />
 
 					<div className="container">
-						<BSPHome projects={projects} />
+						<BSPHome projects={projects} gotoDetailed={this.gotoDetailed} />
 					</div>
 					<BSPFooter />
 				</div>
@@ -456,23 +484,29 @@ class BSPApps extends React.Component{
 				<div>
 					<BSPNavbar />
 					<div className="container">
-						<BSPAchievement projects={projects} />
+						<BSPAchievement projects={projects} gotoHome={this.gotoHome} />
 					</div>
 					<BSPFooter />
 				</div>
 			);
 		}else if(this.state.page === 'detailed'){
-			const project = projects.find(p => p.id === '3');
+
+			if(this.state.detailedProject === null){
+				return null;
+			}else{
+				const project = projects.find(p => p.id === this.state.detailedProject);
 			
-			return(
-				<div>
-					<BSPNavbar />
-					<div className="container">
-						<BSPDetailProject project={project} />
+				return(
+					<div>
+						<BSPNavbar />
+						<div className="container">
+							<BSPDetailProject project={project} />
+						</div>
+						<BSPFooter />
 					</div>
-					<BSPFooter />
-				</div>
-			);
+				);
+			}
+			
 		}else{
 			return null;
 		}
@@ -482,9 +516,9 @@ class BSPApps extends React.Component{
 
 
 let projects = [
-	{id: '1', name: 'Baby Step Project', created: '2019-09-01', isDoneToday: false, status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
-	{id: '2', name: 'Cerpen SUAMI', created: '2019-10-10', isDoneToday: true, status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
-	{id: '3', name: 'Cerpen ala Lovecraft', created: '2019-07-31', isDoneToday: true, status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '2019-09-01'}
+	{id: '1', name: 'Baby Step Project', created: '2019-09-01', updated: '2019-10-20', status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
+	{id: '2', name: 'Cerpen SUAMI', created: '2019-10-10', updated: '2019-10-21', status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
+	{id: '3', name: 'Cerpen ala Lovecraft', created: '2019-07-31', updated: '2019-09-20', status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '2019-09-01'}
 ];
 
 let tasks = [
