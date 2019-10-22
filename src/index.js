@@ -48,45 +48,94 @@ class BSPProjectCard extends React.Component{
 }
 
 class BSPProjectTask extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.delTask = this.delTask.bind(this);
+		this.doneTask = this.doneTask.bind(this);
+	}
+
+	delTask(){
+		this.props.delProjectTask(this.props.project.id, this.props.task.id);
+	}
+
+	doneTask(){
+		this.props.doneProjectTask(this.props.project.id, this.props.task.id);
+	}
+
 	render(){
-		if(this.props.task.status === 'Done'){
-			return(
-				<div className="card mb-3">
-					<div className="card-body clearfix">
-						<p className="card-text float-left pt-2"><del>{this.props.task.name}</del></p>
-						<div className="float-right">
-							<button className="btn" title="Undone"><i className="material-icons">undo</i></button>
-							<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
-						</div>
-					</div>
-				</div>
-			);
-		}else{
-			return(
-				<div className="card mb-3">
-					<div className="card-body clearfix">
-						<p className="card-text float-left pt-2">{this.props.task.name}</p>
-						<div className="float-right">
-							<button className="btn" title="Done"><i className="material-icons">done</i></button>
-							<button className="btn" title="Delete"><i className="material-icons">clear</i></button>
-						</div>
-					</div>
+		const isCompleteButton = (this.props.task.status === 'Done')?"undo":"done";
+		const taskName = (this.props.task.status === 'Done')?<del>{this.props.task.name}</del>:this.props.task.name;
+		const isDone = (this.props.task.status === 'Done')?"Undone":"Done";
+
+		let actionButton = null;
+
+		if(this.props.project.status !== 'Done'){
+			actionButton = (
+				<div className="float-right">
+					<button className="btn" title={isDone} onClick={this.doneTask} ><i className="material-icons">{isCompleteButton}</i></button>
+					<button className="btn" title="Delete" onClick={this.delTask} ><i className="material-icons">clear</i></button>
 				</div>
 			);
 		}
+		
+		return(
+			<div className="card mb-3">
+				<div className="card-body clearfix">
+					<p className="card-text float-left pt-2">{taskName}</p>
+					{actionButton}
+				</div>
+			</div>
+		);
 	}
 }
 
 class BSPTaskForm extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state = {
+			taskName: ''
+		};
+
+		this.addTask = this.addTask.bind(this);
+		this.fillTaskName = this.fillTaskName.bind(this);
+	}
+
+	addTask(e){
+		e.preventDefault();
+		const today = new Date();
+
+		const newTaskID = this.props.getNextTaskId(this.props.project.id);
+
+		let aTask = {
+			id: ''+newTaskID,
+			project_id: this.props.project.id,
+			name: this.state.taskName,
+			created: ''+today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
+			status: 'Undone'
+		};
+
+		this.props.addProjectTask(this.props.project.id, aTask);
+
+		this.setState({taskName: ''});
+	}
+
+	fillTaskName(e){
+		this.setState({
+			taskName: e.target.value
+		});
+	}
+
 	render(){
 		return(
 			<form className="bg-light px-3 pt-3">
 				<div className="form-row">
 					<div className="col-md-9 mb-3">
-						<input type="text" className="form-control" placeholder="Small task..." />
+						<input type="text" className="form-control" placeholder="Small task..." onChange={this.fillTaskName} value={this.state.taskName} />
 					</div>
 					<div className="col-md-3 mb-3">
-						<button className="btn btn-primary col">Add</button>
+						<button className="btn btn-primary col" onClick={this.addTask} >Add</button>
 					</div>
 				</div>
 			</form>
@@ -96,11 +145,14 @@ class BSPTaskForm extends React.Component{
 
 class BSPEditProject extends React.Component{
 	render(){
+		const editButton = (this.props.project.status === 'Done')?null:<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>;
+		const completeButton = (this.props.project.status === 'Done')?null:<button className="btn btn-success" title="Complete Project">It's Complete!</button>;
+
 		return(
 			<div>
-				<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
+				{editButton}
 	            <button className="btn btn-danger mr-2" title="Delete">Delete</button>
-	            <button className="btn btn-success" title="Complete Project">It's Complete!</button>
+	            {completeButton}
 
 				<div className="modal fade" id="formEditProject" tabIndex="-1" role="dialog">
 					<div className="modal-dialog" role="document">
@@ -166,38 +218,6 @@ class BSPAddProject extends React.Component{
 }
 
 
-class BSPUndoneProject extends React.Component{
-	render(){
-		const cards = this.props.projects.map((project) => 
-			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
-		);
-
-		return(
-			<div className="col-md-4 mb-5">
-				<h2 className="mb-5">Let's do it today!</h2>
-				{cards}
-			</div>
-		);
-	}
-}
-
-
-class BSPDoneProject extends React.Component{
-	render(){
-		const cards = this.props.projects.map((project) => 
-			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
-		);
-
-		return(
-			<div className="col-md-4 mb-5">
-				<h2 className="mb-5">Done today.</h2>
-				{cards}
-			</div>
-		);
-	}
-}
-
-
 class BSPHome extends React.Component{
 	render(){
 		const doneProjects = [];
@@ -216,10 +236,24 @@ class BSPHome extends React.Component{
 			}
 		});
 
+		const doneProjectsCards = doneProjects.map((project) =>
+			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
+		);
+
+		const undoneProjectsCards = undoneProjects.map((project) =>
+			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
+		);
+
 		return(
 			<div className="row justify-content-center">
-				<BSPUndoneProject projects={undoneProjects} gotoDetailed={this.props.gotoDetailed} />
-				<BSPDoneProject projects={doneProjects} gotoDetailed={this.props.gotoDetailed} />
+				<div className="col-md-4 mb-5">
+					<h2 className="mb-5">Let's do it today!</h2>
+					{undoneProjectsCards}
+				</div>
+				<div className="col-md-4 mb-5">
+					<h2 className="mb-5">Done today.</h2>
+					{doneProjectsCards}
+				</div>
 			</div>
 		);
 	}
@@ -233,7 +267,7 @@ class BSPAchievement extends React.Component{
 		this.props.projects.forEach((project) => {
 			if(project.status === 'Done'){
 				completeProjects.push(
-					<div className="col-md-4" key="project.id">
+					<div className="col-md-4" key={project.id}>
 						<BSPProjectCard project={project} gotoDetailed={this.props.gotoDetailed} />
 					</div>
 				);
@@ -257,8 +291,10 @@ class BSPAchievement extends React.Component{
 class BSPDetailProject extends React.Component{
 	render(){
 		const tasks = this.props.project.tasks.map((task) => 
-			<BSPProjectTask task={task} key={task.id} />
+			<BSPProjectTask task={task} key={task.id} project={this.props.project} delProjectTask={this.props.delProjectTask} doneProjectTask={this.props.doneProjectTask} />
 		);
+
+		const taskForm = (this.props.project.status === 'Done')?null:<BSPTaskForm project={this.props.project} addProjectTask={this.props.addProjectTask} getNextTaskId={this.props.getNextTaskId} />;
 
 		return(
 			<div className="row py-5">
@@ -269,13 +305,13 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject />
+					<BSPEditProject project={this.props.project} />
 				</div>
 
 				<div className="col-md-6">
 					<h5 className="mb-3">List of small tasks</h5>
 					{tasks}
-					<BSPTaskForm />
+					{taskForm}
 				</div>
 			</div>
 		);
@@ -288,7 +324,7 @@ class BSPNavbar extends React.Component{
 			<div>
 				<nav className="navbar navbar-dark bg-primary navbar-expand-lg">
 					<div className="container">
-						<span className="navbar-brand" title="Home">Baby Step Project</span>
+						<a href="home" onClick={this.props.gotoHome} ><span className="navbar-brand" title="Home">Baby Step Project</span></a>
 
 						<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
 							<span className="navbar-toggler-icon"></span>
@@ -358,15 +394,36 @@ class BSPApps extends React.Component{
 	constructor(props){
 		super(props);
 
+		let projects = [];
+		const tasks = this.props.tasks;
+
+		this.props.projects.forEach((project) => {
+			let newProject = project;
+			newProject.tasks = [];
+
+			tasks.forEach((task) => {
+				if(task.project_id === newProject.id){
+					newProject.tasks.push(task);
+				}
+			});
+
+			projects.push(newProject);
+		});
+
 		this.state = {
 			page: 'home',
 			detailedProject: null,
-			searchText: null
+			searchText: null,
+			projects: projects
 		};
 
 		this.gotoAchievements = this.gotoAchievements.bind(this);
 		this.gotoHome = this.gotoHome.bind(this);
 		this.gotoDetailed = this.gotoDetailed.bind(this);
+		this.addProjectTask = this.addProjectTask.bind(this);
+		this.getNextTaskId = this.getNextTaskId.bind(this);
+		this.delProjectTask = this.delProjectTask.bind(this);
+		this.doneProjectTask = this.doneProjectTask.bind(this);
 	}
 
 	gotoAchievements(e){
@@ -394,67 +451,90 @@ class BSPApps extends React.Component{
 		});
 	}
 
-	render(){
-		let projects = [];
-		const tasks = this.props.tasks;
+	addProjectTask(project_id, task){
+		let projectTemp = this.state.projects;
+		let aProject = projectTemp.find(p => p.id === project_id);
+		aProject.tasks.push(task);
 
-		this.props.projects.forEach((project) => {
-			let newProject = project;
-			newProject.tasks = [];
+		this.setState({projects: projectTemp});
+	}
 
-			tasks.forEach((task) => {
-				if(task.project_id === newProject.id){
-					newProject.tasks.push(task);
-				}
-			});
+	getNextTaskId(project_id){
+		let aProject = this.state.projects.find(p => p.id === project_id);
+		let maxID = 0;
 
-			projects.push(newProject);
+		aProject.tasks.forEach((task) => {
+			if(Number(task.id) > maxID){
+				maxID = Number(task.id);
+			}
 		});
 
+		return (maxID+1);
+	}
+
+	delProjectTask(project_id, task_id){
+		let tempProjects = this.state.projects;
+		let aProject = tempProjects.find(p => p.id === project_id);
+		let newProjectTasks = aProject.tasks.filter(t => t.id !== task_id);
+
+		aProject.tasks = newProjectTasks;
+
+		this.setState({projects: tempProjects});
+	}
+
+	doneProjectTask(project_id, task_id){
+		let tempProjects = this.state.projects;
+		let aProject = tempProjects.find(p => p.id === project_id);
+		let tempTasks = aProject.tasks;
+		let aTask = tempTasks.find(t => t.id === task_id);
+
+		if(aTask.status === 'Done'){
+			aTask.status = 'Undone';
+		}else{
+			aTask.status = 'Done';
+		}
+		
+
+		this.setState({projects: tempProjects});
+	}
+
+	render(){
+		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />;
+		const footer = <BSPFooter />;
+		const minidashboard = (this.state.page === 'home')?<BSPMiniDashboard projects={this.state.projects} />:null;
+		let content = null;
 
 		if(this.state.page === 'home'){
-			return(
-				<div>
-					<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
-					<BSPMiniDashboard projects={projects} />
-
-					<div className="container">
-						<BSPHome projects={projects} gotoDetailed={this.gotoDetailed} />
-					</div>
-					<BSPFooter />
-				</div>
-			);
+			content = <BSPHome projects={this.state.projects} gotoDetailed={this.gotoDetailed} />;
 		}else if(this.state.page === 'achievements'){
-			return(
-				<div>
-					<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
-					<div className="container">
-						<BSPAchievement projects={projects} gotoHome={this.gotoHome} gotoDetailed={this.gotoDetailed} />
-					</div>
-					<BSPFooter />
-				</div>
-			);
+			content = <BSPAchievement projects={this.state.projects} gotoHome={this.gotoHome} gotoDetailed={this.gotoDetailed} />;
 		}else if(this.state.page === 'detailed'){
-
 			if(this.state.detailedProject === null){
-				return null;
+				content = null;
 			}else{
-				const project = projects.find(p => p.id === this.state.detailedProject);
-			
-				return(
-					<div>
-						<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
-						<div className="container">
-							<BSPDetailProject project={project} gotoHome={this.gotoHome} gotoDetailed={this.gotoDetailed} />
-						</div>
-						<BSPFooter />
-					</div>
-				);
+				const project = this.state.projects.find(p => p.id === this.state.detailedProject);
+				content = <BSPDetailProject 
+					project={project} 
+					gotoHome={this.gotoHome} 
+					gotoDetailed={this.gotoDetailed} 
+					addProjectTask={this.addProjectTask} 
+					getNextTaskId={this.getNextTaskId}
+					delProjectTask={this.delProjectTask}
+					doneProjectTask={this.doneProjectTask}
+				/>;
 			}
-			
-		}else{
-			return null;
 		}
+
+		return(
+			<div>
+				{navbar}
+				{minidashboard}
+				<div className="container">
+					{content}
+				</div>
+				{footer}
+			</div>
+		);
 		
 	}
 }
@@ -462,7 +542,7 @@ class BSPApps extends React.Component{
 
 let projects = [
 	{id: '1', name: 'Baby Step Project', created: '2019-09-01', updated: '2019-10-20', status: 'In Progress', description: 'Project membuat aplikasi project. Menggunakan framework mini habit, yaitu mengerjakan project one step at atime', finished: null},
-	{id: '2', name: 'Cerpen SUAMI', created: '2019-10-10', updated: '2019-10-21', status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
+	{id: '2', name: 'Cerpen SUAMI', created: '2019-10-10', updated: '2019-10-23', status: 'In Progress', description: 'Project membuat cerita pendek. Menceritakan tentang pasangan LDM yang diganggu genderuwo.', finished: null},
 	{id: '3', name: 'Cerpen ala Lovecraft', created: '2019-07-31', updated: '2019-09-20', status: 'Done', description: 'Project membuat cerita pendek. Ceritanya bergenre horor kosmik dan gaya penulisannya menirukan Lovecraft.', finished: '2019-09-01'}
 ];
 
