@@ -3,10 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class BSPProjectSum extends React.Component {
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		const completeTasks = [];
 		const incompleteTasks = [];
@@ -38,15 +34,11 @@ class BSPProjectSum extends React.Component {
 }
 
 class BSPProjectCard extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<div className="card bg-warning mb-3" title="A Project">
 				<div className="card-body text-light">
-					<h5 className="card-title">{this.props.project.name}</h5>
+					<a href="detailed" className="text-dark" onClick={(e) => this.props.gotoDetailed(this.props.project.id, e)} ><h5 className="card-title">{this.props.project.name}</h5></a>
 					<p className="card-text">{this.props.project.description}</p>
 					<BSPProjectSum project={this.props.project} />
 				</div>
@@ -56,10 +48,6 @@ class BSPProjectCard extends React.Component{
 }
 
 class BSPProjectTask extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		if(this.props.task.status === 'Done'){
 			return(
@@ -90,10 +78,6 @@ class BSPProjectTask extends React.Component{
 }
 
 class BSPTaskForm extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<form className="bg-light px-3 pt-3">
@@ -111,10 +95,6 @@ class BSPTaskForm extends React.Component{
 }
 
 class BSPEditProject extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<div>
@@ -154,10 +134,6 @@ class BSPEditProject extends React.Component{
 
 
 class BSPAddProject extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<div className="modal fade" id="formAddProject" tabIndex="-1" role="dialog">
@@ -191,22 +167,10 @@ class BSPAddProject extends React.Component{
 
 
 class BSPUndoneProject extends React.Component{
-	constructor(props){
-		super(props);
-
-		this.makeAlert = this.makeAlert.bind(this);
-	}
-
-	makeAlert(){
-		console.log("Hei!");
-	}
-
 	render(){
-		const cards = [];
-
-		this.props.projects.forEach((project) => {
-			cards.push(<BSPProjectCard project={project} onClick={this.makeAlert} />);
-		});
+		const cards = this.props.projects.map((project) => 
+			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
+		);
 
 		return(
 			<div className="col-md-4 mb-5">
@@ -219,16 +183,10 @@ class BSPUndoneProject extends React.Component{
 
 
 class BSPDoneProject extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
-		const cards = [];
-
-		this.props.projects.forEach((project) => {
-			cards.push(<BSPProjectCard project={project} />);
-		});
+		const cards = this.props.projects.map((project) => 
+			<BSPProjectCard key={project.id} project={project} gotoDetailed={this.props.gotoDetailed} />
+		);
 
 		return(
 			<div className="col-md-4 mb-5">
@@ -241,10 +199,6 @@ class BSPDoneProject extends React.Component{
 
 
 class BSPHome extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		const doneProjects = [];
 		const undoneProjects = [];
@@ -273,18 +227,14 @@ class BSPHome extends React.Component{
 
 
 class BSPAchievement extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		const completeProjects = [];
 
 		this.props.projects.forEach((project) => {
 			if(project.status === 'Done'){
 				completeProjects.push(
-					<div className="col-md-4">
-						<BSPProjectCard project={project} />
+					<div className="col-md-4" key="project.id">
+						<BSPProjectCard project={project} gotoDetailed={this.props.gotoDetailed} />
 					</div>
 				);
 			}
@@ -305,26 +255,20 @@ class BSPAchievement extends React.Component{
 
 
 class BSPDetailProject extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
-		const tasks = [];
-
-		this.props.project.tasks.forEach((task) => {
-			tasks.push(<BSPProjectTask task={task} />);
-		});
+		const tasks = this.props.project.tasks.map((task) => 
+			<BSPProjectTask task={task} key={task.id} />
+		);
 
 		return(
 			<div className="row py-5">
 				<div className="col-md-12 mb-5">
 					<h3>Do it one small step at a time so you can done it easily.</h3>
-					<a href="home" className="text-muted">Back to home</a>
+					<a href="home" className="text-muted" onClick={this.props.gotoHome} >Back to home</a>
 				</div>
 
 				<div className="col-md-6 mb-5">
-					<BSPProjectCard project={this.props.project} />
+					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
 					<BSPEditProject />
 				</div>
 
@@ -339,16 +283,12 @@ class BSPDetailProject extends React.Component{
 }
 
 class BSPNavbar extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<div>
 				<nav className="navbar navbar-dark bg-primary navbar-expand-lg">
 					<div className="container">
-						<a onClick={this.props.gotoHome} href="home" ><span className="navbar-brand" title="Home">Baby Step Project</span></a>
+						<span className="navbar-brand" title="Home">Baby Step Project</span>
 
 						<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
 							<span className="navbar-toggler-icon"></span>
@@ -377,10 +317,6 @@ class BSPNavbar extends React.Component{
 
 
 class BSPMiniDashboard extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		const completeProjects = [];
 		const incompleteProjects = [];
@@ -406,10 +342,6 @@ class BSPMiniDashboard extends React.Component{
 
 
 class BSPFooter extends React.Component{
-	constructor(props){
-		super(props);
-	}
-
 	render(){
 		return(
 			<footer className="bg-light py-5">
@@ -437,16 +369,29 @@ class BSPApps extends React.Component{
 		this.gotoDetailed = this.gotoDetailed.bind(this);
 	}
 
-	gotoAchievements(){
-		this.setState({page: 'achievements'});
+	gotoAchievements(e){
+		e.preventDefault();
+		this.setState({
+			page: 'achievements',
+			detailedProject: null
+		});
 	}
 
-	gotoHome(){
-		this.setState({page: 'home'});
+	gotoHome(e){
+		e.preventDefault();
+		this.setState({
+			page: 'home',
+			detailedProject: null
+		});
 	}
 
-	gotoDetailed(){
-		alert('go to detailed');
+	gotoDetailed(project_id, e){
+		e.preventDefault();
+		
+		this.setState({
+			page: 'detailed',
+			detailedProject: project_id
+		});
 	}
 
 	render(){
@@ -482,9 +427,9 @@ class BSPApps extends React.Component{
 		}else if(this.state.page === 'achievements'){
 			return(
 				<div>
-					<BSPNavbar />
+					<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
 					<div className="container">
-						<BSPAchievement projects={projects} gotoHome={this.gotoHome} />
+						<BSPAchievement projects={projects} gotoHome={this.gotoHome} gotoDetailed={this.gotoDetailed} />
 					</div>
 					<BSPFooter />
 				</div>
@@ -498,9 +443,9 @@ class BSPApps extends React.Component{
 			
 				return(
 					<div>
-						<BSPNavbar />
+						<BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />
 						<div className="container">
-							<BSPDetailProject project={project} />
+							<BSPDetailProject project={project} gotoHome={this.gotoHome} gotoDetailed={this.gotoDetailed} />
 						</div>
 						<BSPFooter />
 					</div>
