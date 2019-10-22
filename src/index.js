@@ -24,6 +24,10 @@ class BSPProjectSum extends React.Component {
 			dayLong = Math.floor((finished.getTime() - created.getTime())/(1000*60*60*24));
 		}else{
 			dayLong = Math.floor((today.getTime() - created.getTime())/(1000*60*60*24));
+
+			if(dayLong < 0){
+				dayLong = 0;
+			}
 		}
 		
 
@@ -186,6 +190,54 @@ class BSPEditProject extends React.Component{
 
 
 class BSPAddProject extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state = {
+			projectName: '',
+			projectDesc: ''
+		}
+
+		this.addProject = this.addProject.bind(this);
+		this.fillProjectName = this.fillProjectName.bind(this);
+		this.fillProjectDesc = this.fillProjectDesc.bind(this);
+	}
+
+	fillProjectName(e){
+		this.setState({
+			projectName: e.target.value
+		});
+	}
+
+	fillProjectDesc(e){
+		this.setState({
+			projectDesc: e.target.value
+		});
+	}
+
+	addProject(){
+		const newID = this.props.getNextProjectId();
+		const today = new Date();
+
+		let aProject = {
+			id: ''+newID,
+			name: this.state.projectName,
+			created: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate(),
+			updated: today.getFullYear()+'-'+(today.getMonth()+1)+'-'+(today.getDate()-1),
+			status: 'In Progress',
+			description: this.state.projectDesc,
+			finished: null,
+			tasks: []
+		}
+
+		this.props.addNewProject(aProject);
+
+		this.setState({
+			projectName: '',
+			projectDesc: ''
+		});
+	}
+
 	render(){
 		return(
 			<div className="modal fade" id="formAddProject" tabIndex="-1" role="dialog">
@@ -198,16 +250,16 @@ class BSPAddProject extends React.Component{
 							<form>
 								<div className="form-group">
 									<label className="col-form-label">Project Name</label>
-									<input type="text" className="form-control" />
+									<input type="text" className="form-control" value={this.state.projectName} onChange={this.fillProjectName} />
 								</div>
 								<div className="form-group">
 									<label className="col-form-label">Description</label>
-									<textarea className="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+									<textarea className="form-control" rows="3" placeholder="Three sentences is good..." value={this.state.projectDesc} onChange={this.fillProjectDesc} ></textarea>
 								</div>
 							</form>
 						</div>
 						<div className="modal-footer">
-							<button className="btn btn-success">Save</button>
+							<button className="btn btn-success" onClick={this.addProject} >Save</button>
 							<button className="btn btn-danger" data-dismiss="modal">Close</button>
 						</div>
 					</div>
@@ -345,7 +397,7 @@ class BSPNavbar extends React.Component{
 					</div>
 				</nav>
 
-				<BSPAddProject />
+				<BSPAddProject getNextProjectId={this.props.getNextProjectId} addNewProject={this.props.addNewProject} />
 			</div>
 		);
 	}
@@ -424,6 +476,8 @@ class BSPApps extends React.Component{
 		this.getNextTaskId = this.getNextTaskId.bind(this);
 		this.delProjectTask = this.delProjectTask.bind(this);
 		this.doneProjectTask = this.doneProjectTask.bind(this);
+		this.addNewProject = this.addNewProject.bind(this);
+		this.getNextProjectId = this.getNextProjectId.bind(this);
 	}
 
 	gotoAchievements(e){
@@ -459,6 +513,18 @@ class BSPApps extends React.Component{
 		this.setState({projects: projectTemp});
 	}
 
+	addNewProject(newProject){
+		let tempProjects = this.state.projects;
+
+		tempProjects.push(newProject);
+
+		this.setState({
+			projects: tempProjects
+		});
+
+		console.log(this.state.projects);
+	}
+
 	getNextTaskId(project_id){
 		let aProject = this.state.projects.find(p => p.id === project_id);
 		let maxID = 0;
@@ -466,6 +532,18 @@ class BSPApps extends React.Component{
 		aProject.tasks.forEach((task) => {
 			if(Number(task.id) > maxID){
 				maxID = Number(task.id);
+			}
+		});
+
+		return (maxID+1);
+	}
+
+	getNextProjectId(){
+		let maxID = 0;
+
+		this.state.projects.forEach((project) => {
+			if(Number(project.id) > maxID){
+				maxID = Number(project.id);
 			}
 		});
 
@@ -499,7 +577,7 @@ class BSPApps extends React.Component{
 	}
 
 	render(){
-		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} />;
+		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} getNextProjectId={this.getNextProjectId} addNewProject={this.addNewProject} />;
 		const footer = <BSPFooter />;
 		const minidashboard = (this.state.page === 'home')?<BSPMiniDashboard projects={this.state.projects} />:null;
 		let content = null;
