@@ -148,6 +148,45 @@ class BSPTaskForm extends React.Component{
 }
 
 class BSPEditProject extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.state = {
+			projectName: this.props.project.name,
+			projectDesc: this.props.project.description
+		};
+
+		this.editProject = this.editProject.bind(this);
+		this.fillProjectName = this.fillProjectName.bind(this);
+		this.fillProjectDesc = this.fillProjectDesc.bind(this);
+	}
+
+	fillProjectName(e){
+		this.setState({
+			projectName: e.target.value
+		});
+	}
+
+	fillProjectDesc(e){
+		this.setState({
+			projectDesc: e.target.value
+		});
+	}
+
+	editProject(){
+		let aProject = this.props.project;
+
+		aProject.name = this.state.projectName;
+		aProject.description = this.state.projectDesc;
+
+		this.props.editDetailedProject(aProject);
+
+		this.setState({
+			projectName: this.props.project.name,
+			projectDesc: this.props.project.description
+		});
+	}
+
 	render(){
 		const editButton = (this.props.project.status === 'Done')?null:<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>;
 		const completeButton = (this.props.project.status === 'Done')?null:<button className="btn btn-success" title="Complete Project">It's Complete!</button>;
@@ -168,16 +207,16 @@ class BSPEditProject extends React.Component{
 								<form>
 									<div className="form-group">
 										<label className="col-form-label">Project Name</label>
-										<input type="text" className="form-control" />
+										<input type="text" className="form-control" value={this.state.projectName} onChange={this.fillProjectName} />
 									</div>
 									<div className="form-group">
 										<label className="col-form-label">Description</label>
-										<textarea className="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+										<textarea className="form-control" rows="3" placeholder="Three sentences is good..." value={this.state.projectDesc} onChange={this.fillProjectDesc} ></textarea>
 									</div>
 								</form>
 							</div>
 							<div className="modal-footer">
-								<button className="btn btn-success">Save</button>
+								<button className="btn btn-success" onClick={this.editProject} >Save</button>
 								<button className="btn btn-danger" data-dismiss="modal">Close</button>
 							</div>
 						</div>
@@ -357,7 +396,7 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject project={this.props.project} />
+					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} />
 				</div>
 
 				<div className="col-md-6">
@@ -478,6 +517,7 @@ class BSPApps extends React.Component{
 		this.doneProjectTask = this.doneProjectTask.bind(this);
 		this.addNewProject = this.addNewProject.bind(this);
 		this.getNextProjectId = this.getNextProjectId.bind(this);
+		this.editDetailedProject = this.editDetailedProject.bind(this);
 	}
 
 	gotoAchievements(e){
@@ -523,6 +563,13 @@ class BSPApps extends React.Component{
 		});
 
 		console.log(this.state.projects);
+	}
+
+	editDetailedProject(editedProject){
+		let projectTemp = this.state.projects.filter(p => p.id !== editedProject.id);
+		projectTemp.push(editedProject);
+
+		this.setState({projects: projectTemp});
 	}
 
 	getNextTaskId(project_id){
@@ -599,6 +646,7 @@ class BSPApps extends React.Component{
 					getNextTaskId={this.getNextTaskId}
 					delProjectTask={this.delProjectTask}
 					doneProjectTask={this.doneProjectTask}
+					editDetailedProject={this.editDetailedProject}
 				/>;
 			}
 		}
