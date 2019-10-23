@@ -159,6 +159,8 @@ class BSPEditProject extends React.Component{
 		this.editProject = this.editProject.bind(this);
 		this.fillProjectName = this.fillProjectName.bind(this);
 		this.fillProjectDesc = this.fillProjectDesc.bind(this);
+		this.completeProject = this.completeProject.bind(this);
+		this.uncompleteProject = this.uncompleteProject.bind(this);
 	}
 
 	fillProjectName(e){
@@ -187,9 +189,28 @@ class BSPEditProject extends React.Component{
 		});
 	}
 
+	completeProject(){
+		let aProject = this.props.project;
+		const today = new Date();
+
+		aProject.status = 'Done';
+		aProject.finished = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+		this.props.editDetailedProject(aProject);
+	}
+
+	uncompleteProject(){
+		let aProject = this.props.project;
+
+		aProject.status = 'In Progress';
+		aProject.finished = null;
+
+		this.props.editDetailedProject(aProject);
+	}
+
 	render(){
 		const editButton = (this.props.project.status === 'Done')?null:<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>;
-		const completeButton = (this.props.project.status === 'Done')?null:<button className="btn btn-success" title="Complete Project">It's Complete!</button>;
+		const completeButton = (this.props.project.status === 'Done')?<button className="btn btn-success" title="Undo Complete Project" onClick={this.uncompleteProject} >Undo</button>:<button className="btn btn-success" title="Complete Project" onClick={this.completeProject} >It's Complete!</button>;
 
 		return(
 			<div>
