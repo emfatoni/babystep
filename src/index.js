@@ -161,6 +161,7 @@ class BSPEditProject extends React.Component{
 		this.fillProjectDesc = this.fillProjectDesc.bind(this);
 		this.completeProject = this.completeProject.bind(this);
 		this.uncompleteProject = this.uncompleteProject.bind(this);
+		this.delProject = this.delProject.bind(this);
 	}
 
 	fillProjectName(e){
@@ -208,6 +209,14 @@ class BSPEditProject extends React.Component{
 		this.props.editDetailedProject(aProject);
 	}
 
+	delProject(e){
+		let aProject = this.props.project;
+
+		this.props.delDetailedProject(aProject);
+
+		this.props.gotoHome(e);
+	}
+
 	render(){
 		const editButton = (this.props.project.status === 'Done')?null:<button className="btn btn-primary mr-2" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>;
 		const completeButton = (this.props.project.status === 'Done')?<button className="btn btn-success" title="Undo Complete Project" onClick={this.uncompleteProject} >Undo</button>:<button className="btn btn-success" title="Complete Project" onClick={this.completeProject} >It's Complete!</button>;
@@ -215,7 +224,7 @@ class BSPEditProject extends React.Component{
 		return(
 			<div>
 				{editButton}
-	            <button className="btn btn-danger mr-2" title="Delete">Delete</button>
+	            <button className="btn btn-danger mr-2" title="Delete" onClick={this.delProject} >Delete</button>
 	            {completeButton}
 
 				<div className="modal fade" id="formEditProject" tabIndex="-1" role="dialog">
@@ -417,7 +426,7 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} />
+					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} />
 				</div>
 
 				<div className="col-md-6">
@@ -532,13 +541,16 @@ class BSPApps extends React.Component{
 		this.gotoAchievements = this.gotoAchievements.bind(this);
 		this.gotoHome = this.gotoHome.bind(this);
 		this.gotoDetailed = this.gotoDetailed.bind(this);
+
 		this.addProjectTask = this.addProjectTask.bind(this);
 		this.getNextTaskId = this.getNextTaskId.bind(this);
 		this.delProjectTask = this.delProjectTask.bind(this);
 		this.doneProjectTask = this.doneProjectTask.bind(this);
+
 		this.addNewProject = this.addNewProject.bind(this);
 		this.getNextProjectId = this.getNextProjectId.bind(this);
 		this.editDetailedProject = this.editDetailedProject.bind(this);
+		this.delDetailedProject = this.delDetailedProject.bind(this);
 	}
 
 	gotoAchievements(e){
@@ -589,6 +601,12 @@ class BSPApps extends React.Component{
 	editDetailedProject(editedProject){
 		let projectTemp = this.state.projects.filter(p => p.id !== editedProject.id);
 		projectTemp.push(editedProject);
+
+		this.setState({projects: projectTemp});
+	}
+
+	delDetailedProject(deletedProject){
+		let projectTemp = this.state.projects.filter(p => p.id !== deletedProject.id);
 
 		this.setState({projects: projectTemp});
 	}
@@ -668,6 +686,7 @@ class BSPApps extends React.Component{
 					delProjectTask={this.delProjectTask}
 					doneProjectTask={this.doneProjectTask}
 					editDetailedProject={this.editDetailedProject}
+					delDetailedProject={this.delDetailedProject}
 				/>;
 			}
 		}
