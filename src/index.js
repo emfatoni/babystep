@@ -64,7 +64,38 @@ class BSPProjectTask extends React.Component{
 	}
 
 	doneTask(){
-		this.props.doneProjectTask(this.props.project.id, this.props.task.id);
+		let aTask = this.props.task;
+		let aProject = this.props.project;
+
+		if(aTask.status === 'Done'){
+			aTask.status = 'Undone';
+
+			const isThere = aProject.tasksDoneToday.find(t => t.id === aTask.id);
+
+			if(isThere !== undefined){
+
+				let tempTasks = aProject.tasksDoneToday.filter(t => t.id !== aTask.id);
+
+				aProject.tasksDoneToday = tempTasks;
+
+			}
+		}else{
+			aTask.status = 'Done';
+
+			aProject.tasksDoneToday.push(aTask);
+		}
+
+		if(aProject.tasksDoneToday.length > 0){
+			const today = new Date();
+
+			aProject.updated = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+		}else{
+			aProject.updated = aProject.oldUpdated;
+		}
+
+		this.props.doneProjectTask(this.props.project.id, aTask);
+
+		this.props.editDetailedProject(aProject);
 	}
 
 	render(){
@@ -412,7 +443,7 @@ class BSPAchievement extends React.Component{
 class BSPDetailProject extends React.Component{
 	render(){
 		const tasks = this.props.project.tasks.map((task) => 
-			<BSPProjectTask task={task} key={task.id} project={this.props.project} delProjectTask={this.props.delProjectTask} doneProjectTask={this.props.doneProjectTask} />
+			<BSPProjectTask task={task} key={task.id} project={this.props.project} delProjectTask={this.props.delProjectTask} doneProjectTask={this.props.doneProjectTask} editDetailedProject={this.props.editDetailedProject} />
 		);
 
 		const taskForm = (this.props.project.status === 'Done')?null:<BSPTaskForm project={this.props.project} addProjectTask={this.props.addProjectTask} getNextTaskId={this.props.getNextTaskId} />;
@@ -521,6 +552,8 @@ class BSPApps extends React.Component{
 		this.props.projects.forEach((project) => {
 			let newProject = project;
 			newProject.tasks = [];
+			newProject.tasksDoneToday = [];
+			newProject.oldUpdated = project.updated;
 
 			tasks.forEach((task) => {
 				if(task.project_id === newProject.id){
@@ -594,13 +627,13 @@ class BSPApps extends React.Component{
 		this.setState({
 			projects: tempProjects
 		});
-
-		console.log(this.state.projects);
 	}
 
 	editDetailedProject(editedProject){
 		let projectTemp = this.state.projects.filter(p => p.id !== editedProject.id);
 		projectTemp.push(editedProject);
+
+		projectTemp.sort((a, b) => (a.id > b.id) ? 1 : -1);
 
 		this.setState({projects: projectTemp});
 	}
@@ -646,18 +679,14 @@ class BSPApps extends React.Component{
 		this.setState({projects: tempProjects});
 	}
 
-	doneProjectTask(project_id, task_id){
+	doneProjectTask(project_id, aTask){
 		let tempProjects = this.state.projects;
 		let aProject = tempProjects.find(p => p.id === project_id);
-		let tempTasks = aProject.tasks;
-		let aTask = tempTasks.find(t => t.id === task_id);
+		let tempTasks = aProject.tasks.filter(t => t.id !== aTask.id);
 
-		if(aTask.status === 'Done'){
-			aTask.status = 'Undone';
-		}else{
-			aTask.status = 'Done';
-		}
+		tempTasks.push(aTask);
 		
+		tempTasks.sort((a, b) => (a.id > b.id) ? 1 : -1);
 
 		this.setState({projects: tempProjects});
 	}
