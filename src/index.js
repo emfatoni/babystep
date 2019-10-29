@@ -327,7 +327,8 @@ class BSPAddProject extends React.Component{
 			status: 'In Progress',
 			description: this.state.projectDesc,
 			finished: null,
-			tasks: []
+			tasks: [],
+			tasksDoneToday: []
 		}
 
 		this.props.addNewProject(aProject);
@@ -440,6 +441,40 @@ class BSPAchievement extends React.Component{
 }
 
 
+class BSPSearchResult extends React.Component{
+	render(){
+		const searchResult = [];
+
+		this.props.projects.forEach((project) => {
+			const byName = (project.name.toUpperCase()).indexOf(this.props.searchText.toUpperCase());
+			const byDesc = (project.description.toUpperCase()).indexOf(this.props.searchText.toUpperCase());
+
+			if((byName !== -1) || (byDesc !== -1)){
+				searchResult.push(project);
+			}
+		});
+
+
+		const searchResultCards = searchResult.map((project) =>
+			<div className="col-md-4" key={project.id} >
+				<BSPProjectCard project={project} gotoDetailed={this.props.gotoDetailed} />
+			</div>
+		);
+
+		return(
+			<div className="row py-5">
+				<div className="col-md-12 mb-5">
+					<h1>Is this what you search?</h1>
+					<a href="home" className="text-muted" onClick={this.props.gotoHome} >Back to home</a>
+				</div>
+
+				{searchResultCards}
+			</div>
+		);
+	}
+}
+
+
 class BSPDetailProject extends React.Component{
 	render(){
 		const tasks = this.props.project.tasks.map((task) => 
@@ -471,6 +506,17 @@ class BSPDetailProject extends React.Component{
 }
 
 class BSPNavbar extends React.Component{
+	constructor(props){
+		super(props);
+
+		this.fillSearchText = this.fillSearchText.bind(this);
+	}
+
+	fillSearchText(e){
+		this.props.fillSearchText(e.target.value);
+	}
+
+
 	render(){
 		return(
 			<div>
@@ -489,7 +535,7 @@ class BSPNavbar extends React.Component{
 								<li className="nav-item" title="Add Project"><button className="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i className="material-icons">note_add</i></button></li>
 								<li className="nav-item">
 									<form className="form-inline ml-2">
-										<input type="text" name="" className="form-control" placeholder="Search here..." />
+										<input type="text" className="form-control" placeholder="Search here..." value={this.props.searchText} onChange={this.fillSearchText} />
 									</form>
 								</li>
 							</ul>
@@ -567,7 +613,7 @@ class BSPApps extends React.Component{
 		this.state = {
 			page: 'home',
 			detailedProject: null,
-			searchText: null,
+			searchText: '',
 			projects: projects
 		};
 
@@ -584,6 +630,25 @@ class BSPApps extends React.Component{
 		this.getNextProjectId = this.getNextProjectId.bind(this);
 		this.editDetailedProject = this.editDetailedProject.bind(this);
 		this.delDetailedProject = this.delDetailedProject.bind(this);
+
+		this.fillSearchText = this.fillSearchText.bind(this);
+	}
+
+	fillSearchText(text){
+
+		if(text === ''){
+			this.setState({
+				searchText: text,
+				page: 'home'
+			});
+		}else{
+			this.setState({
+				searchText: text,
+				page: 'search'
+			});
+		}
+
+		
 	}
 
 	gotoAchievements(e){
@@ -692,7 +757,7 @@ class BSPApps extends React.Component{
 	}
 
 	render(){
-		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} getNextProjectId={this.getNextProjectId} addNewProject={this.addNewProject} />;
+		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} getNextProjectId={this.getNextProjectId} addNewProject={this.addNewProject} fillSearchText={this.fillSearchText} searchText={this.state.searchText} />;
 		const footer = <BSPFooter />;
 		const minidashboard = (this.state.page === 'home')?<BSPMiniDashboard projects={this.state.projects} />:null;
 		let content = null;
@@ -718,6 +783,8 @@ class BSPApps extends React.Component{
 					delDetailedProject={this.delDetailedProject}
 				/>;
 			}
+		}else if(this.state.page === 'search'){
+			content = <BSPSearchResult gotoHome={this.gotoHome} projects={this.state.projects} gotoDetailed={this.gotoDetailed} searchText={this.state.searchText} />
 		}
 
 		return(
