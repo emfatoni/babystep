@@ -193,6 +193,22 @@ class BSPEditProject extends React.Component{
 		this.completeProject = this.completeProject.bind(this);
 		this.uncompleteProject = this.uncompleteProject.bind(this);
 		this.delProject = this.delProject.bind(this);
+		this.validateEdit = this.validateEdit.bind(this);
+	}
+
+	validateEdit(){
+		if(this.state.projectName === ''){
+			alert("Project name is mandatory");
+			return false;
+		}else if(this.state.projectDesc === ''){
+			alert("Project description is mandatory");
+			return false;
+		}else if(this.state.projectDesc.length < 100){
+			alert("Description is should be 100 characters at least.");
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	fillProjectName(e){
@@ -207,13 +223,17 @@ class BSPEditProject extends React.Component{
 		});
 	}
 
-	editProject(){
+	editProject(e){
+		e.preventDefault();
+
 		let aProject = this.props.project;
 
-		aProject.name = this.state.projectName;
-		aProject.description = this.state.projectDesc;
+		if(this.validateEdit()){
+			aProject.name = this.state.projectName;
+			aProject.description = this.state.projectDesc;
 
-		this.props.editDetailedProject(aProject);
+			this.props.refreshDetailedPage(aProject.id);
+		}
 
 		this.setState({
 			projectName: this.props.project.name,
@@ -265,7 +285,7 @@ class BSPEditProject extends React.Component{
 								<h5 className="modal-title">Edit Project</h5>
 							</div>
 							<div className="modal-body">
-								<form>
+								<form onSubmit={this.editProject} >
 									<div className="form-group">
 										<label className="col-form-label">Project Name</label>
 										<input type="text" className="form-control" value={this.state.projectName} onChange={this.fillProjectName} />
@@ -273,6 +293,7 @@ class BSPEditProject extends React.Component{
 									<div className="form-group">
 										<label className="col-form-label">Description</label>
 										<textarea className="form-control" rows="3" placeholder="Three sentences is good..." value={this.state.projectDesc} onChange={this.fillProjectDesc} ></textarea>
+										<span>{this.state.projectDesc.length} characters</span>
 									</div>
 								</form>
 							</div>
@@ -301,6 +322,22 @@ class BSPAddProject extends React.Component{
 		this.addProject = this.addProject.bind(this);
 		this.fillProjectName = this.fillProjectName.bind(this);
 		this.fillProjectDesc = this.fillProjectDesc.bind(this);
+		this.validate = this.validate.bind(this);
+	}
+
+	validate(){
+		if(this.state.projectName === ''){
+			alert("Project name is mandatory");
+			return false;
+		}else if(this.state.projectDesc === ''){
+			alert("Project description is mandatory");
+			return false;
+		}else if(this.state.projectDesc.length < 100){
+			alert("Description is should be 100 characters at least.");
+			return false;
+		}else{
+			return true;
+		}
 	}
 
 	fillProjectName(e){
@@ -331,12 +368,14 @@ class BSPAddProject extends React.Component{
 			tasksDoneToday: []
 		}
 
-		this.props.addNewProject(aProject);
+		if(this.validate()){
+			this.props.addNewProject(aProject);
 
-		this.setState({
-			projectName: '',
-			projectDesc: ''
-		});
+			this.setState({
+				projectName: '',
+				projectDesc: ''
+			});
+		}
 	}
 
 	render(){
@@ -492,7 +531,7 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} />
+					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} refreshDetailedPage={this.props.refreshDetailedPage} />
 				</div>
 
 				<div className="col-md-6">
@@ -632,6 +671,8 @@ class BSPApps extends React.Component{
 		this.delDetailedProject = this.delDetailedProject.bind(this);
 
 		this.fillSearchText = this.fillSearchText.bind(this);
+
+		this.refreshDetailedPage = this.refreshDetailedPage.bind(this);
 	}
 
 	fillSearchText(text){
@@ -670,6 +711,13 @@ class BSPApps extends React.Component{
 	gotoDetailed(project_id, e){
 		e.preventDefault();
 		
+		this.setState({
+			page: 'detailed',
+			detailedProject: project_id
+		});
+	}
+
+	refreshDetailedPage(project_id){
 		this.setState({
 			page: 'detailed',
 			detailedProject: project_id
@@ -770,9 +818,9 @@ class BSPApps extends React.Component{
 			if(this.state.detailedProject === null){
 				content = null;
 			}else{
-				const project = this.state.projects.find(p => p.id === this.state.detailedProject);
+
 				content = <BSPDetailProject 
-					project={project} 
+					project={this.state.projects.find(p => p.id === this.state.detailedProject)} 
 					gotoHome={this.gotoHome} 
 					gotoDetailed={this.gotoDetailed} 
 					addProjectTask={this.addProjectTask} 
@@ -781,6 +829,7 @@ class BSPApps extends React.Component{
 					doneProjectTask={this.doneProjectTask}
 					editDetailedProject={this.editDetailedProject}
 					delDetailedProject={this.delDetailedProject}
+					refreshDetailedPage={this.refreshDetailedPage}
 				/>;
 			}
 		}else if(this.state.page === 'search'){
