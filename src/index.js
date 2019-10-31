@@ -60,7 +60,10 @@ class BSPProjectTask extends React.Component{
 	}
 
 	delTask(){
-		this.props.delProjectTask(this.props.project.id, this.props.task.id);
+		const tempTasks = this.props.project.tasks.filter(t => t.id !== this.props.task.id);
+		this.props.project.tasks = tempTasks;
+
+		this.props.refreshDetailedPage(this.props.project.id);
 	}
 
 	doneTask(){
@@ -74,7 +77,7 @@ class BSPProjectTask extends React.Component{
 
 			if(isThere !== undefined){
 
-				let tempTasks = aProject.tasksDoneToday.filter(t => t.id !== aTask.id);
+				const tempTasks = aProject.tasksDoneToday.filter(t => t.id !== aTask.id);
 
 				aProject.tasksDoneToday = tempTasks;
 
@@ -93,9 +96,7 @@ class BSPProjectTask extends React.Component{
 			aProject.updated = aProject.oldUpdated;
 		}
 
-		this.props.doneProjectTask(this.props.project.id, aTask);
-
-		this.props.editDetailedProject(aProject);
+		this.props.refreshDetailedPage(aProject.id);
 	}
 
 	render(){
@@ -113,15 +114,17 @@ class BSPProjectTask extends React.Component{
 				</div>
 			);
 		}
+
+
 		
-		return(
-			<div className="card mb-3">
-				<div className="card-body clearfix">
-					<p className="card-text float-left pt-2">{taskName}</p>
-					{actionButton}
+			return(
+				<div className="card mb-3">
+					<div className="card-body clearfix">
+						<p className="card-text float-left pt-2">{taskName}</p>
+						{actionButton}
+					</div>
 				</div>
-			</div>
-		);
+			);
 	}
 }
 
@@ -151,7 +154,10 @@ class BSPTaskForm extends React.Component{
 			status: 'Undone'
 		};
 
-		this.props.addProjectTask(this.props.project.id, aTask);
+		
+		this.props.project.tasks.push(aTask);
+
+		this.props.refreshDetailedPage(this.props.project.id);
 
 		this.setState({taskName: ''});
 	}
@@ -194,6 +200,7 @@ class BSPEditProject extends React.Component{
 		this.uncompleteProject = this.uncompleteProject.bind(this);
 		this.delProject = this.delProject.bind(this);
 		this.validateEdit = this.validateEdit.bind(this);
+		this.validateDone = this.validateDone.bind(this);
 	}
 
 	validateEdit(){
@@ -209,6 +216,11 @@ class BSPEditProject extends React.Component{
 		}else{
 			return true;
 		}
+	}
+
+	validateDone(){
+		const tasks = this.props.project.tasks;
+		return  tasks.every(p => p.status === 'Done');
 	}
 
 	fillProjectName(e){
@@ -245,10 +257,14 @@ class BSPEditProject extends React.Component{
 		let aProject = this.props.project;
 		const today = new Date();
 
-		aProject.status = 'Done';
-		aProject.finished = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-
-		this.props.editDetailedProject(aProject);
+		if(this.validateDone()){
+			aProject.status = 'Done';
+			aProject.finished = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			this.props.refreshDetailedPage(aProject.id);
+		}else{
+			alert("All tasks should be Done.");
+		}
+		
 	}
 
 	uncompleteProject(){
@@ -257,15 +273,16 @@ class BSPEditProject extends React.Component{
 		aProject.status = 'In Progress';
 		aProject.finished = null;
 
-		this.props.editDetailedProject(aProject);
+		this.props.refreshDetailedPage(aProject.id);
 	}
 
 	delProject(e){
 		let aProject = this.props.project;
 
-		this.props.delDetailedProject(aProject);
-
-		this.props.gotoHome(e);
+		if(window.confirm("Are you sure to delete this project?")){
+			this.props.delDetailedProject(aProject);
+			this.props.gotoHome(e);
+		}
 	}
 
 	render(){
@@ -419,6 +436,7 @@ class BSPHome extends React.Component{
 			if(project.status === 'In Progress'){
 				const updated = new Date(project.updated);
 				const today = new Date();
+				today.setHours(0, 0, 0, 0);
 
 				if(updated.getTime() >= today.getTime()){
 					doneProjects.push(project);
@@ -517,10 +535,10 @@ class BSPSearchResult extends React.Component{
 class BSPDetailProject extends React.Component{
 	render(){
 		const tasks = this.props.project.tasks.map((task) => 
-			<BSPProjectTask task={task} key={task.id} project={this.props.project} delProjectTask={this.props.delProjectTask} doneProjectTask={this.props.doneProjectTask} editDetailedProject={this.props.editDetailedProject} />
+			<BSPProjectTask task={task} key={task.id} project={this.props.project} delProjectTask={this.props.delProjectTask} doneProjectTask={this.props.doneProjectTask} editDetailedProject={this.props.editDetailedProject} refreshDetailedPage={this.props.refreshDetailedPage} />
 		);
 
-		const taskForm = (this.props.project.status === 'Done')?null:<BSPTaskForm project={this.props.project} addProjectTask={this.props.addProjectTask} getNextTaskId={this.props.getNextTaskId} />;
+		const taskForm = (this.props.project.status === 'Done')?null:<BSPTaskForm project={this.props.project} addProjectTask={this.props.addProjectTask} getNextTaskId={this.props.getNextTaskId} refreshDetailedPage={this.props.refreshDetailedPage} />;
 
 		return(
 			<div className="row py-5">
@@ -531,7 +549,7 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject project={this.props.project} editDetailedProject={this.props.editDetailedProject} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} refreshDetailedPage={this.props.refreshDetailedPage} />
+					<BSPEditProject project={this.props.project} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} refreshDetailedPage={this.props.refreshDetailedPage} />
 				</div>
 
 				<div className="col-md-6">
@@ -702,6 +720,7 @@ class BSPApps extends React.Component{
 
 	gotoHome(e){
 		e.preventDefault();
+
 		this.setState({
 			page: 'home',
 			detailedProject: null
