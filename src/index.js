@@ -277,10 +277,13 @@ class BSPEditProject extends React.Component{
 	}
 
 	delProject(e){
-		let aProject = this.props.project;
-
 		if(window.confirm("Are you sure to delete this project?")){
-			this.props.delDetailedProject(aProject);
+			// this.props.delDetailedProject(this.props.project);
+
+			const tempProjects = this.props.projects.projectList.filter(p => p.id !== this.props.project.id);
+
+			this.props.projects.projectList = tempProjects;
+
 			this.props.gotoHome(e);
 		}
 	}
@@ -369,7 +372,7 @@ class BSPAddProject extends React.Component{
 		});
 	}
 
-	addProject(){
+	addProject(e){
 		const newID = this.props.getNextProjectId();
 		const today = new Date();
 
@@ -386,7 +389,11 @@ class BSPAddProject extends React.Component{
 		}
 
 		if(this.validate()){
-			this.props.addNewProject(aProject);
+			// this.props.addNewProject(aProject);
+
+			this.props.projects.projectList.push(aProject);
+
+			this.props.gotoHome(e);
 
 			this.setState({
 				projectName: '',
@@ -432,7 +439,7 @@ class BSPHome extends React.Component{
 		const doneProjects = [];
 		const undoneProjects = [];
 
-		this.props.projects.forEach((project) => {
+		this.props.projects.projectList.forEach((project) => {
 			if(project.status === 'In Progress'){
 				const updated = new Date(project.updated);
 				const today = new Date();
@@ -474,7 +481,7 @@ class BSPAchievement extends React.Component{
 	render(){
 		const completeProjects = [];
 
-		this.props.projects.forEach((project) => {
+		this.props.projects.projectList.forEach((project) => {
 			if(project.status === 'Done'){
 				completeProjects.push(
 					<div className="col-md-4" key={project.id}>
@@ -549,7 +556,7 @@ class BSPDetailProject extends React.Component{
 
 				<div className="col-md-6 mb-5">
 					<BSPProjectCard project={this.props.project} gotoDetailed={this.props.gotoDetailed} />
-					<BSPEditProject project={this.props.project} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} refreshDetailedPage={this.props.refreshDetailedPage} />
+					<BSPEditProject project={this.props.project} delDetailedProject={this.props.delDetailedProject} gotoHome={this.props.gotoHome} refreshDetailedPage={this.props.refreshDetailedPage} projects={this.props.projects} />
 				</div>
 
 				<div className="col-md-6">
@@ -600,7 +607,7 @@ class BSPNavbar extends React.Component{
 					</div>
 				</nav>
 
-				<BSPAddProject getNextProjectId={this.props.getNextProjectId} addNewProject={this.props.addNewProject} />
+				<BSPAddProject getNextProjectId={this.props.getNextProjectId} addNewProject={this.props.addNewProject} gotoHome={this.props.gotoHome} projects={this.props.projects} />
 			</div>
 		);
 	}
@@ -612,7 +619,7 @@ class BSPMiniDashboard extends React.Component{
 		const completeProjects = [];
 		const incompleteProjects = [];
 
-		this.props.projects.forEach((project) => {
+		this.props.projects.projectList.forEach((project) => {
 			if(project.status === 'Done'){
 				completeProjects.push(project);
 			}else{
@@ -667,11 +674,15 @@ class BSPApps extends React.Component{
 			projects.push(newProject);
 		});
 
+		let datas = {
+			projectList: projects
+		};
+
 		this.state = {
 			page: 'home',
 			detailedProject: null,
 			searchText: '',
-			projects: projects
+			projects: datas
 		};
 
 		this.gotoAchievements = this.gotoAchievements.bind(this);
@@ -792,7 +803,7 @@ class BSPApps extends React.Component{
 	getNextProjectId(){
 		let maxID = 0;
 
-		this.state.projects.forEach((project) => {
+		this.state.projects.projectList.forEach((project) => {
 			if(Number(project.id) > maxID){
 				maxID = Number(project.id);
 			}
@@ -824,7 +835,7 @@ class BSPApps extends React.Component{
 	}
 
 	render(){
-		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} getNextProjectId={this.getNextProjectId} addNewProject={this.addNewProject} fillSearchText={this.fillSearchText} searchText={this.state.searchText} />;
+		const navbar = <BSPNavbar gotoAchievements={this.gotoAchievements} gotoHome={this.gotoHome} getNextProjectId={this.getNextProjectId} addNewProject={this.addNewProject} fillSearchText={this.fillSearchText} searchText={this.state.searchText} projects={this.state.projects} />;
 		const footer = <BSPFooter />;
 		const minidashboard = (this.state.page === 'home')?<BSPMiniDashboard projects={this.state.projects} />:null;
 		let content = null;
@@ -839,7 +850,8 @@ class BSPApps extends React.Component{
 			}else{
 
 				content = <BSPDetailProject 
-					project={this.state.projects.find(p => p.id === this.state.detailedProject)} 
+					project={this.state.projects.projectList.find(p => p.id === this.state.detailedProject)}
+					projects={this.state.projects} 
 					gotoHome={this.gotoHome} 
 					gotoDetailed={this.gotoDetailed} 
 					addProjectTask={this.addProjectTask} 
