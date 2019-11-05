@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/babystep/static/css/main.34de6062.chunk.css",
+    "main.js": "/babystep/static/js/main.e6f00d95.chunk.js",
+    "main.js.map": "/babystep/static/js/main.e6f00d95.chunk.js.map",
+    "runtime-main.js": "/babystep/static/js/runtime-main.a6cec4bf.js",
+    "runtime-main.js.map": "/babystep/static/js/runtime-main.a6cec4bf.js.map",
+    "static/js/2.bf4a704c.chunk.js": "/babystep/static/js/2.bf4a704c.chunk.js",
+    "static/js/2.bf4a704c.chunk.js.map": "/babystep/static/js/2.bf4a704c.chunk.js.map",
+    "index.html": "/babystep/index.html",
+    "precache-manifest.e9465fba88d603301d0f6694fb8699f1.js": "/babystep/precache-manifest.e9465fba88d603301d0f6694fb8699f1.js",
+    "service-worker.js": "/babystep/service-worker.js",
+    "static/css/main.34de6062.chunk.css.map": "/babystep/static/css/main.34de6062.chunk.css.map"
+  }
+}

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+    <link rel="apple-touch-icon" href="logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>Baby Step Project</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+
+    
+    
+    <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
+        <div class="container">
+          <span class="navbar-brand" title="Home">Baby Step Project</span></span>
+
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItem">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse justify-content-end mt-2" id="navbarItem">
+            <ul class="nav justify-content-end">
+              <li class="nav-item" title="Save"><button class="btn btn-primary"><i class="material-icons">save</i></button></li>
+              <li class="nav-item" title="Achievements"><button class="btn btn-primary"><i class="material-icons">emoji_events</i></button></li>
+              <li class="nav-item" title="Add Project"><button class="btn btn-primary" data-toggle="modal" data-target="#formAddProject"><i class="material-icons">note_add</i></button></li>
+              <li class="nav-item">
+                <form class="form-inline ml-2">
+                  <input type="text" name="" class="form-control" placeholder="Search here...">
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+
+    <div class="modal fade" id="formAddProject" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Project</h5>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label class="col-form-label">Project Name</label>
+                <input type="text" class="form-control">
+              </div>
+              <div class="form-group">
+                <label class="col-form-label">Description</label>
+                <textarea class="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success">Save</button>
+            <button class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    
+  
+    <div class="jumbotron bg-light">
+      <div class="container">
+          <h1 class="display-4">You've completed 60 projects,<br>now do the remaining 3, one step at a time <i class="material-icons md-48" style="font-size: 45px !important">emoji_food_beverage</i></h1>
+        </div>
+      </div>
+
+  
+
+    
+
+    <div class="container">
+
+      <!-- HOME
+      <div class="row justify-content-center">
+        <div class="col-md-4 mb-5">
+          <h2 class="mb-5">Let's do it today!</h2>
+
+          <div class="card mb-3 bg-warning text-light" title="A Project">
+            <div class="card-body">
+              <h5 class="card-title">You're Next (KW)</h5>
+              <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+              <p class="text-dark">26 days • 3 of 8 tasks completed.</p>
+            </div>
+          </div>
+
+          <div class="card mb-3" title="A Project">
+            <div class="card-body">
+              <h5 class="card-title">You're Next (KW)</h5>
+              <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+              <p class="text-muted">26 days • 3 of 8 tasks completed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-5">
+          <h2 class="mb-5">Done today.</h2>
+
+          <div class="card mb-3 bg-success text-light" title="A Project">
+            <div class="card-body">
+              <h5 class="card-title">You're Next (KW)</h5>
+              <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+              <p class="text-dark">26 days • 3 of 8 tasks completed.</p>
+            </div>
+          </div>
+        </div>
+      </div> 
+    -->
+      
+
+
+    <!-- ACHIEVE
+      <div class="row py-5">
+
+          <div class="col-md-12">
+            <h1 class="mb-5">Congratulations! This is what you've tackle so far.</h1>  
+          </div>
+          
+
+          <div class="col-md-4">
+            <div class="card mb-3 bg-warning text-light" title="A Project">
+              <div class="card-body">
+                <h5 class="card-title">You're Next (KW)</h5>
+                <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+                <p class="text-dark">26 days • 8 tasks completed.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card mb-3 bg-warning text-light" title="A Project">
+              <div class="card-body">
+                <h5 class="card-title">You're Next (KW)</h5>
+                <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+                <p class="text-dark">26 days • 8 tasks completed.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card mb-3 bg-success text-light" title="A Project">
+              <div class="card-body">
+                <h5 class="card-title">You're Next (KW)</h5>
+                <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+                <p class="text-dark">26 days • 8 tasks completed.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="card mb-3" title="A Project">
+              <div class="card-body">
+                <h5 class="card-title">You're Next (KW)</h5>
+                <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+                <p class="text-dark">26 days • 8 tasks completed.</p>
+              </div>
+            </div>
+          </div>
+
+      </div>
+    -->
+      
+
+
+      
+      <div class="row py-5">
+        <div class="col-md-12 mb-5">
+          <h3>Do it one small step at a time so you can done it easily.</h3>
+          <a href="#" class="text-muted">Back to home</a>
+        </div>
+
+        <div class="col-md-6 mb-5">
+          <div class="card bg-warning text-light mb-3" title="A Project">
+            <div class="card-body">
+              <h5 class="card-title">You're Next (KW)</h5>
+              <p class="card-text">Project pembuatan novel yang telah lama tertunda. Adopsi dari You're Next dengan rasa sendiri.</p>
+              <p class="text-dark">26 days • 3 of 8 tasks completed.</p>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-primary" title="Edit" data-toggle="modal" data-target="#formEditProject">Edit</button>
+            <button class="btn btn-danger" title="Delete">Delete</button>
+            <button class="btn btn-success" title="Complete Project">It's Complete!</button>
+
+            <div class="modal fade" id="formEditProject" tabindex="-1" role="dialog">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Edit Project</h5>
+                  </div>
+                  <div class="modal-body">
+                    <form>
+                      <div class="form-group">
+                        <label class="col-form-label">Project Name</label>
+                        <input type="text" class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label class="col-form-label">Description</label>
+                        <textarea class="form-control" rows="3" placeholder="Three sentences is good..."></textarea>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button class="btn btn-success">Save</button>
+                    <button class="btn btn-danger" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <h5 class="mb-3">List of small tasks</h5>
+          <div class="card mb-3">
+            <div class="card-body clearfix">
+              <p class="card-text float-left pt-2">Outline novel awal-akhir</p>
+              <div class="float-right">
+                <button class="btn" title="Done"><i class="material-icons">done</i></button>
+                <button class="btn" title="Delete"><i class="material-icons">clear</i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-body clearfix">
+              <p class="card-text float-left pt-2">Outline novel awal-akhir</p>
+              <div class="float-right">
+                <button class="btn" title="Done"><i class="material-icons">done</i></button>
+                <button class="btn" title="Delete"><i class="material-icons">clear</i></button>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-3">
+            <div class="card-body clearfix">
+              <p class="card-text float-left pt-2"><del>Outline novel awal-akhir</del></p>
+              <div class="float-right">
+                <button class="btn" title="Undo"><i class="material-icons">undo</i></button>
+                <button class="btn" title="Delete"><i class="material-icons">clear</i></button>
+              </div>
+            </div>
+          </div>
+
+          <form class="bg-light px-3 pt-3">
+            <div class="form-row">
+              <div class="col-md-9 mb-3">
+                <input type="text" class="form-control" placeholder="Small task...">    
+              </div>
+              <div class="col-md-3 mb-3">
+                <button class="btn btn-primary col">Add</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    
+
+    </div>
+
+    <footer class="bg-light py-5">
+      <div class="container text-center">
+        <p class="m-0">© 2019 M Fatoni</p>
+      </div>
+    </footer>
+    
+
+    <!-- BOOTSTRAP JS-->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>
